@@ -1,5 +1,5 @@
+import { useRouter } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const recentMatches = [
@@ -9,6 +9,8 @@ const recentMatches = [
 ];
 
 export default function HomeScreen() {
+  const router = useRouter();
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -26,11 +28,25 @@ export default function HomeScreen() {
 
         <View style={styles.card}>
           <Text style={styles.cardTitle}>最近の記録</Text>
+
           {recentMatches.map((match) => (
-            <View key={match.id} style={styles.matchRow}>
+            <Pressable
+              key={match.id}
+              style={styles.matchRow}
+              onPress={() =>
+                router.push({
+                  pathname: "/match/[id]",
+                  params: {
+                    id: String(match.id),
+                    date: match.date,
+                    result: match.result,
+                  },
+                })
+              }
+            >
               <Text style={styles.matchDate}>{match.date}</Text>
               <Text style={styles.matchResult}>{match.result}</Text>
-            </View>
+            </Pressable>
           ))}
         </View>
       </ScrollView>
@@ -85,6 +101,7 @@ const styles = StyleSheet.create({
   matchRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#e5e7eb",
