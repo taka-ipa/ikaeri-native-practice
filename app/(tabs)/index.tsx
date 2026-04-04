@@ -1,54 +1,50 @@
-import { useRouter } from "expo-router";
+import { Link } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const recentMatches = [
-  { id: 1, date: "3/31", result: "○△" },
-  { id: 2, date: "3/30", result: "△×" },
-  { id: 3, date: "3/29", result: "○○" },
-];
+import { recentMatches } from "../data/matches";
 
 export default function HomeScreen() {
-  const router = useRouter();
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>今日のふりかえり</Text>
+        <Text style={styles.title}>最近の試合</Text>
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>今日の課題</Text>
-          <Text style={styles.task}>・初弾を当てる</Text>
-          <Text style={styles.task}>・無駄デスを減らす</Text>
-        </View>
+        {recentMatches.map((match) => (
+          <Link
+            key={match.id}
+            href={{
+              pathname: "/match/[id]",
+              params: { id: String(match.id) },
+            }}
+            asChild
+          >
+            <Pressable style={styles.card}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.date}>{match.date}</Text>
+                <Text
+                  style={[
+                    styles.result,
+                    match.result === "WIN" ? styles.win : styles.lose,
+                  ]}
+                >
+                  {match.result}
+                </Text>
+              </View>
 
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>試合を追加</Text>
-        </Pressable>
+              <Text style={styles.rule}>{match.rule}</Text>
+              <Text style={styles.stage}>{match.stage}</Text>
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>最近の記録</Text>
-
-          {recentMatches.map((match) => (
-            <Pressable
-              key={match.id}
-              style={styles.matchRow}
-              onPress={() =>
-                router.push({
-                  pathname: "/match/[id]",
-                  params: {
-                    id: String(match.id),
-                    date: match.date,
-                    result: match.result,
-                  },
-                })
-              }
-            >
-              <Text style={styles.matchDate}>{match.date}</Text>
-              <Text style={styles.matchResult}>{match.result}</Text>
+              <View style={styles.ratingRow}>
+                {match.ratings.map((rating, index) => (
+                  <View key={index} style={styles.badge}>
+                    <Text style={styles.badgeText}>{rating.value}</Text>
+                  </View>
+                ))}
+              </View>
             </Pressable>
-          ))}
-        </View>
+          </Link>
+        ))}
       </ScrollView>
     </SafeAreaView>
   );
@@ -57,60 +53,70 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#f7f8fc",
   },
   content: {
-    padding: 20,
-    gap: 16,
+    padding: 16,
+    gap: 12,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "700",
     marginBottom: 8,
   },
   card: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#fff",
     borderRadius: 16,
     padding: 16,
+    gap: 8,
     shadowColor: "#000",
     shadowOpacity: 0.08,
-    shadowRadius: 8,
+    shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
+    elevation: 2,
   },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    marginBottom: 12,
-  },
-  task: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  button: {
-    backgroundColor: "#2563eb",
-    paddingVertical: 14,
-    borderRadius: 14,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  matchRow: {
+  cardHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
   },
-  matchDate: {
-    fontSize: 16,
+  date: {
+    fontSize: 14,
+    color: "#666",
   },
-  matchResult: {
-    fontSize: 16,
-    fontWeight: "600",
+  result: {
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  win: {
+    color: "#2e8b57",
+  },
+  lose: {
+    color: "#d9534f",
+  },
+  rule: {
+    fontSize: 18,
+    fontWeight: "700",
+  },
+  stage: {
+    fontSize: 14,
+    color: "#444",
+  },
+  ratingRow: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 4,
+  },
+  badge: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#eef1f6",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  badgeText: {
+    fontSize: 14,
+    fontWeight: "700",
   },
 });
