@@ -35,14 +35,17 @@ export default function AddMatchScreen() {
   };
 
   const handleSave = () => {
-    if (!date || !rule || !stage || !weapon || !result) {
-      Alert.alert("入力エラー", "必須項目を入力してください");
-      return;
-    }
+    console.log("保存ボタン押された");
+    console.log({ date, rule, stage, weapon, result, ratings });
+
+    // if (!date || !rule || !stage || !weapon || !result) {
+    //   Alert.alert("入力エラー", "必須項目を入力してください");
+    //   return;
+    // }
 
     const hasAllRatings = tasks.every((task) => ratings[task.id]);
     if (!hasAllRatings) {
-      Alert.alert("入力エラー", "すべての課題評価を選んでください");
+      console.log("すべての課題を評価してください");
       return;
     }
 
