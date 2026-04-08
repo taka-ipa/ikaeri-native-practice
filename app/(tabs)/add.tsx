@@ -45,7 +45,7 @@ export default function AddMatchScreen() {
 
     const hasAllRatings = tasks.every((task) => ratings[task.id]);
     if (!hasAllRatings) {
-      console.log("すべての課題を評価してください");
+      console.log("すべての課題を評価してください。");
       return;
     }
 
